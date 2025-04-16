@@ -36,6 +36,20 @@ app.UseCors(policy =>
     .WithHeaders(HeaderNames.ContentType)
 );
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ShopOnlineDbContext>();
+
+    try
+    {
+        db.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        // Log the error or take corrective actions
+        Console.WriteLine("Migration failed: " + ex.Message);
+    }
+}
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
